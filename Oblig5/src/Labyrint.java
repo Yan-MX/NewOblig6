@@ -19,7 +19,7 @@ public class Labyrint {
 //		{
 //			maze = copy.getMaze();
 //		}
-
+		
 		Liste<String> list = new Lenkeliste<String>();
 //		ArrayList<String> visitedRutes = new ArrayList<String>();
 		if(Labyrint.getRute(k,r).tilTegn()=='.') {
@@ -84,9 +84,9 @@ public class Labyrint {
 		for(int i= 0; i<l1.getRowNum();i++) {
 			for(int o= 0;o<l1.getColNum();o++) {	
 				Rute r=Labyrint.getRute(o, i);
-				if(edge( r)&&r.getTegn()=='.') {
-					r=aapning(r);	
-				}
+//				if(edge( r)&&r.getTegn()=='.') {
+//					r=aapning(r);	
+//				}
 				if(edge(r)) {
 					if(i-1>=0) {
 						r.setNord(Labyrint.getRute(o,i-1 ));
@@ -118,6 +118,7 @@ public class Labyrint {
 			}
 			
 		}
+		
 		return l1;
 		
 	}
