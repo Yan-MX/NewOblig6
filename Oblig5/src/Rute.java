@@ -22,91 +22,6 @@ public abstract class Rute {
 		return "(" + x + "," + y + ")";
 	}
 
-	public void ga2(Liste<String> n, String currentString, Rute previousRute, Rute currentRute, String previousString) {
-		if (!(previousRute == null)) {
-			previousString = currentString;
-			currentString += previousRute.coordinate() + "--> ";
-		}
-		if (currentRute.edge() && currentRute.tilTegn() == '.') {
-			previousString = currentString;
-			currentString += currentRute.coordinate();
-			n.leggTil(currentString);
-//			System.out.println("NEW STRING: " + currentString);
-//			System.out.println(" Right now the size of ruteliste" + currentRutelist.size());
-//			System.out.println();
-//			for (Rute i : currentRutelist) {
-//				System.out.print(i.coordinate());
-//			}
-//			System.out.println();
-			currentRutelist.remove(currentRute);
-			return;
-
-		} else {
-			if (currentRute.getNord().tilTegn() == '.' && currentRute.getNord().equals(previousRute) == false) {
-				// check if the rute is going to a old path that it has already been to
-				// if no, then add this Rute into the currentRudelist
-				// if yes, then it means the Rute has been here before and need to go one step
-				// back????
-				// when it goes to a dead end, this helps to go back to a next available
-				// intersection
-				if (!currentRutelist.contains(currentRute.getNord())) {
-					previousRute = currentRute;
-					currentRutelist.add(currentRute.getNord());
-					ga2(n, currentString, previousRute, previousRute.getNord(), previousString);
-					// check if this has a next, if not, then close this intersection, turn the sign
-					// into'#'
-					// if it has a next, then go to next direction
-					if (!CurrentRuteHasNext(currentRute)) {
-
-						currentString = previousString;
-						currentRutelist.remove(currentRute);
-						currentRute.setTegn('#');
-					}
-				}
-			}
-			if (currentRute.getSyd().tilTegn() == '.' && currentRute.getSyd().equals(previousRute) == false) {
-
-				if (!currentRutelist.contains(currentRute.getSyd())) {
-					previousRute = currentRute;
-					currentRutelist.add(currentRute.getSyd());
-					ga2(n, currentString, previousRute, previousRute.getSyd(), previousString);
-					if (!CurrentRuteHasNext(currentRute)) {
-						currentString = previousString;
-						currentRutelist.remove(currentRute);
-						currentRute.setTegn('#');
-					}
-				}
-			}
-			if (currentRute.getVest().tilTegn() == '.' && currentRute.getVest().equals(previousRute) == false) {
-				if (!currentRutelist.contains(currentRute.getVest())) {
-					previousRute = currentRute;
-					currentRutelist.add(currentRute.getVest());
-					ga2(n, currentString, previousRute, previousRute.getVest(), previousString);
-					if (!CurrentRuteHasNext(currentRute)) {
-						currentString = previousString;
-						currentRutelist.remove(currentRute);
-						currentRute.setTegn('#');
-					}
-				}
-
-			}
-			if (currentRute.getOst().tilTegn() == '.' && currentRute.getOst().equals(previousRute) == false) {
-				if (!currentRutelist.contains(currentRute.getOst())) {
-					previousRute = currentRute;
-					currentRutelist.add(currentRute.getOst());
-					ga2(n, currentString, previousRute, previousRute.getOst(), previousString);
-					if (!CurrentRuteHasNext(currentRute)) {
-						currentString = previousString;
-						currentRutelist.remove(currentRute);
-						currentRute.setTegn('#');
-					}
-				}
-			}
-		}
-		// kill and delete the dead end rute
-		currentRutelist.remove(currentRute);
-	}
-
 	public boolean CurrentRuteHasNext(Rute c) {
 		if (c.getSyd().tilTegn() == '.' || c.getVest().tilTegn() == '.' || c.getOst().tilTegn() == '.'
 				|| c.getNord().tilTegn() == '.') {
@@ -118,14 +33,20 @@ public abstract class Rute {
 
 	public Liste<String> finnUtvei(Liste<String> t) {
 
-		LIsteMonitor m = new LIsteMonitor(t);
+		LIsteMonitor monitor = new LIsteMonitor(t);
+		String s = this.coordinate();
+		Rute theRute = this;
+		Nthread(theRute, monitor, s);
+		Sthread(theRute, monitor, s);
+		Vthread(theRute, monitor, s);
+		Ethread(theRute, monitor, s);
+		return t;
+	}
 
-		Rute currentRute = this;
-		//System.out.println(this.getSyd().coordinate());
-		
+	public void Nthread(Rute currentRute, LIsteMonitor m, String currentString) {
 		if (currentRute.hasN()) {
 			if (currentRute.getNord().tilTegn() == '.') {
-				String currentString = this.coordinate();
+
 				if (currentRute.getNord().edge()) {
 					currentString += "--> " + currentRute.getNord().coordinate();
 					m.addString(currentString);
@@ -146,12 +67,12 @@ public abstract class Rute {
 				}
 			}
 		}
+	}
+
+	public void Sthread(Rute currentRute, LIsteMonitor m, String currentString) {
 		if (currentRute.hasS()) {
-			System.out.println(currentRute.coordinate());
-			
-			System.out.println(currentRute.getSyd().coordinate());
+
 			if (currentRute.getSyd().tilTegn() == '.') {
-				String currentString = this.coordinate();
 
 				if (currentRute.getSyd().edge()) {
 					currentString = currentString + "--> " + currentRute.getSyd().coordinate();
@@ -172,10 +93,12 @@ public abstract class Rute {
 			}
 
 		}
+	}
+
+	public void Vthread(Rute currentRute, LIsteMonitor m, String currentString) {
 		if (currentRute.hasV()) {
 
 			if (currentRute.getVest().tilTegn() == '.') {
-				String currentString = this.coordinate();
 
 				if (currentRute.getVest().edge()) {
 					currentString = currentString + "--> " + currentRute.getVest().coordinate();
@@ -196,9 +119,11 @@ public abstract class Rute {
 			}
 
 		}
+	}
+
+	public void Ethread(Rute currentRute, LIsteMonitor m, String currentString) {
 		if (currentRute.hasE()) {
 			if (currentRute.getOst().tilTegn() == '.') {
-				String currentString = this.coordinate();
 
 				if (currentRute.getOst().edge()) {
 					currentString = currentString + "--> " + currentRute.getOst().coordinate();
@@ -219,7 +144,6 @@ public abstract class Rute {
 			}
 		}
 
-		return t;
 	}
 
 	public Rute gaa(String s) {
@@ -290,7 +214,7 @@ public abstract class Rute {
 	}
 
 	public boolean hasE() {
-		if (this.getX() == getLabyrint().getRowNum() - 1) {
+		if (this.getX() == getLabyrint().getColNum() - 1) {
 			return false;
 		} else {
 			return true;
