@@ -3,7 +3,7 @@ import java.io.File;
 	import java.util.Scanner;
 class hovedprogram{
     public static void main(String[] args) throws FileNotFoundException {
-    	 String filnavn ="7.in";
+    	 String filnavn ="3.in";
 	       
 	        
 	        File fil = new File(filnavn);

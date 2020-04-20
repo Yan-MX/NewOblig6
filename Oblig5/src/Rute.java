@@ -6,6 +6,7 @@ public abstract class Rute {
 	private int x, y;
 	private char tegn;
 	private static Labyrint la;
+	public static int count;
 	private List<Rute> currentRutelist = new ArrayList<Rute>();
 
 	public Rute(int a, int b, char c, Labyrint g) {
@@ -40,6 +41,7 @@ public abstract class Rute {
 		Sthread(theRute, monitor, s);
 		Vthread(theRute, monitor, s);
 		Ethread(theRute, monitor, s);
+		System.out.println("Total number of Threads: "+ count);
 		return t;
 	}
 
@@ -56,9 +58,10 @@ public abstract class Rute {
 					Thread newthread = new Thread(
 							new Traad(currentRute.getNord(), currentString, m, currentRute, "N Direction"));
 					newthread.start();
-					System.out.println("a N thread started");
+//					System.out.println("a N thread started");
 					try {
 						newthread.join();
+						count++;
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -82,9 +85,10 @@ public abstract class Rute {
 					Thread newthread = new Thread(
 							new Traad(currentRute.getSyd(), currentString, m, currentRute, "S Direction"));
 					newthread.start();
-					System.out.println("a S thread started");
+//					System.out.println("a S thread started");
 					try {
 						newthread.join();
+						count++;
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -108,9 +112,10 @@ public abstract class Rute {
 					Thread newthread = new Thread(
 							new Traad(currentRute.getVest(), currentString, m, currentRute, "V Direction"));
 					newthread.start();
-					System.out.println("a V thread started");
+//					System.out.println("a V thread started");
 					try {
 						newthread.join();
+						count++;
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -133,9 +138,10 @@ public abstract class Rute {
 					Thread newthread = new Thread(
 							new Traad(currentRute.getOst(), currentString, m, currentRute, "E Direction"));
 					newthread.start();
-					System.out.println("a E thread started");
+//					System.out.println("a E thread started");
 					try {
 						newthread.join();
+						count++;
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
