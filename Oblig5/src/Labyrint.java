@@ -14,23 +14,17 @@ public class Labyrint {
 		colNum =c ;
 		
 	}
-	public static Liste<String> finnUtveiFra(int k, int r){
-//		if (copy != null)
-//		{
-//			maze = copy.getMaze();
-//		}
-		
+	// call the given 'rute' to find its way out
+	public static Liste<String> finnUtveiFra(int k, int r){	
 		Liste<String> list = new Lenkeliste<String>();
-//		ArrayList<String> visitedRutes = new ArrayList<String>();
 		if(Labyrint.getRute(k,r).tilTegn()=='.') {
 			list = Labyrint.getRute(k, r).finnUtvei(list);
 		}else {
 			System.out.println("Current start point is '#', choose again");
 		}
-		//Labyrint.maze = copy.maze;		;
-		//finnUtvei2(Labyrint.getRute(k, r), visitedRutes);
 		return list ;
 	}
+	// reading from the file
 	public static Labyrint lesFraFil(File fil) {
 		Scanner s1 = null;
 		int r = 0,c =0;
@@ -80,10 +74,15 @@ public class Labyrint {
 		copy= ly1;
 		return 	ly1;
 	}
+	
+	//method for updating neighbours
 	public static Labyrint updateNeighbour(Labyrint l1) {
 		for(int i= 0; i<l1.getRowNum();i++) {
 			for(int o= 0;o<l1.getColNum();o++) {	
 				Rute r=Labyrint.getRute(o, i);
+				
+				//this is the code from last time that has a bug, i think it has sth to do with the upcasting or downcasting
+				//also the 'aapning' class in this program is kind of not playing any important role
 //				if(edge( r)&&r.getTegn()=='.') {
 //					r=aapning(r);	
 //				}
@@ -123,58 +122,6 @@ public class Labyrint {
 		
 	}
 	
-	public boolean finnUtvei2(Rute rute, ArrayList<String> visitedRutes) {
-		int row = rute.getY();
-		int col = rute.getX();
-
-		// To avoid cycle
-		if (visitedRutes.contains(rute.coordinate())) {
-			visitedRutes.remove(rute.coordinate());
-			return false;
-		}
-
-		if (rute.edge()) {
-			if (rute.tilTegn() == '.')
-			{
-				visitedRutes.add(rute.coordinate());
-				return true;
-			}
-			else
-			{
-				visitedRutes.add(rute.coordinate());
-				return false;
-			}
-		}
-		
-		// Mark the rute as visited
-		visitedRutes.add(rute.coordinate());
-		//path.add(new Coordinate(row, col));
-
-		Rute nordRute = Labyrint.getRute(col, row - 1);
-		Rute sydRute = Labyrint.getRute(col, row + 1);
-		Rute ostRute = Labyrint.getRute(col + 1, row);
-		Rute vestRute = Labyrint.getRute(col - 1, row);
-
-		System.out.println("position=>" + "(" + col + ":" + row + ")");
-
-		if (finnUtvei2(nordRute, visitedRutes)) {
-			return true;
-		}
-		if (finnUtvei2(sydRute, visitedRutes)) {
-			return true;
-		}
-		if (finnUtvei2(ostRute, visitedRutes)) {
-			return true;
-		}
-		if (finnUtvei2(vestRute, visitedRutes)) {
-			return true;
-		}
-		//path.remove(path.size() - 1);
-		return false;
-		
-	}
-	
-	
 	
 	//to update all the 'aapning' in the maze
 	private static Rute aapning(Rute rute) {
@@ -189,6 +136,7 @@ public class Labyrint {
 			return false;
 		}
 	}
+	// some getters an setters
 	public static  Rute[][] getMaze() {
 		return maze;
 	}

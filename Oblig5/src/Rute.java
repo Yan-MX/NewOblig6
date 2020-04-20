@@ -23,20 +23,15 @@ public abstract class Rute {
 		return "(" + x + "," + y + ")";
 	}
 
-	public boolean CurrentRuteHasNext(Rute c) {
-		if (c.getSyd().tilTegn() == '.' || c.getVest().tilTegn() == '.' || c.getOst().tilTegn() == '.'
-				|| c.getNord().tilTegn() == '.') {
-			return true;
-		} else {
-			return false;
-		}
-	}
+
 
 	public Liste<String> finnUtvei(Liste<String> t) {
-
+//creating a monitor for the list of strings, so that the threads can not access to the list as
+// the same time? not sure if it is necessary to use the monitor here
 		LIsteMonitor monitor = new LIsteMonitor(t);
 		String s = this.coordinate();
 		Rute theRute = this;
+		// those four methods are for creating threads in four directions respectively
 		Nthread(theRute, monitor, s);
 		Sthread(theRute, monitor, s);
 		Vthread(theRute, monitor, s);
@@ -47,19 +42,21 @@ public abstract class Rute {
 
 	public void Nthread(Rute currentRute, LIsteMonitor m, String currentString) {
 		if (currentRute.hasN()) {
+			//here is to check if the 'rute's neightbour in the north is an end? if so, 
 			if (currentRute.getNord().tilTegn() == '.') {
-
+				//just simply add its coordinate to the string and add the entire string to the list
 				if (currentRute.getNord().edge()) {
 					currentString += "--> " + currentRute.getNord().coordinate();
 					m.addString(currentString);
 //				System.out.println("NOR end add a string "+currentString);
 				} else {
-
+					//if it is more than two steps from an end, then create a thread
 					Thread newthread = new Thread(
 							new Traad(currentRute.getNord(), currentString, m, currentRute, "N Direction"));
 					newthread.start();
 //					System.out.println("a N thread started");
 					try {
+						//join the thread, and add a count to keep in track how many threads we have created
 						newthread.join();
 						count++;
 					} catch (InterruptedException e) {
@@ -151,7 +148,7 @@ public abstract class Rute {
 		}
 
 	}
-
+// go is just go one step further in one direction, the direction is in the parameter s
 	public Rute gaa(String s) {
 		switch (s) {
 		case "n":
@@ -168,7 +165,7 @@ public abstract class Rute {
 		}
 
 	}
-
+// return the valid neightbours it has
 	public String getValidNeighboursNumber() {
 		String n = "";
 		if (this.getNord() instanceof HvitRute) {
@@ -194,7 +191,7 @@ public abstract class Rute {
 			return false;
 		}
 	}
-
+//check if it is edge/end
 	public boolean hasN() {
 		if (this.getY() == 0) {
 			return false;
@@ -226,7 +223,7 @@ public abstract class Rute {
 			return true;
 		}
 	}
-
+// some getters and setters
 	public Rute getNord() {
 		return nord;
 	}
